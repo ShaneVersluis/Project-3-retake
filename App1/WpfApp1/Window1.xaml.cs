@@ -26,7 +26,9 @@ namespace WpfApp1
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            MainWindow win0 = new MainWindow();
+            win0.Show();
+            this.Close();
         }
     }
 }
