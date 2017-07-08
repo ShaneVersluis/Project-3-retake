@@ -22,6 +22,14 @@ namespace WpfApp1
     {
         public MainWindow()
         {
+            dbConnection test = new dbConnection();
+            test.CreateDB();
+
+            IParser db = new lampParser();
+            db.ReadData();
+            db.WriteToDB();
+            test.InsertIntoDB();
+
             InitializeComponent();
         }
 
