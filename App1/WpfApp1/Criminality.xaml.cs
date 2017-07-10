@@ -10,37 +10,28 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MySql.Data;
-using MySql.Data.MySqlClient;
-using System.Data;
 using OxyPlot;
 using OxyPlot.Series;
-
+using OxyPlot.Wpf;
 
 namespace WpfApp1
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Criminality.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Criminality : Window
     {
-        public MainWindow()
+        public Criminality()
         {
-            //do a test on the database
-            DBconnection test = new DBconnection();
-            test.CreateDB();
-            
-            //Do a test on the parser
-            IParse db = new ParkingParser();
-            db.ReadData();
-            db.WriteToDB();
-            test.InsertIntoDB();
-
             InitializeComponent();
         }
-
+        private void Home_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow Home = new MainWindow();
+            Home.Show();
+            this.Close();
+        }
         private void InfoButton_Click(object sender, RoutedEventArgs e)
         {
             Info CInfo = new Info();
@@ -52,13 +43,6 @@ namespace WpfApp1
         {
             PwC CPwc = new PwC();
             CPwc.Show();
-            this.Close();
-        }
-
-        private void Criminality_Click(object sender, RoutedEventArgs e)
-        {
-            Criminality CCriminality = new Criminality();
-            CCriminality.Show();
             this.Close();
         }
 

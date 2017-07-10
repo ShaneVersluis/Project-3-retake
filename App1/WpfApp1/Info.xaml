@@ -1,0 +1,46 @@
+﻿<Window x:Class="WpfApp1.Info"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="INFO" Height="600" Width="800" Background="Black">
+    <StackPanel>
+        <TextBlock FontSize="30" HorizontalAlignment="Center" Foreground="Yellow" Margin="0 25 0 25">
+            City Crime
+        </TextBlock>
+        <Grid/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Cursor="Hand" x:Name="PwCperdistrict" Click="PwCperdistrict_Click" Content="People with cars per district" Margin="5 0 0 5" Background="LightGray" Grid.Column="0"/>
+            <Button Cursor="Hand" x:Name="Parkinglot" Click="Parkinglot_click" Content="parkinglot" Margin="5 0 0 5" Background="LightGray" Grid.Column="1"/>
+            <Button Cursor="Hand" x:Name="Criminality" Click="Criminality_click" Content="Criminality" Margin="5 0 0 5" Background="LightGray"  Grid.Column="2"/>
+            <Button Cursor="Hand" x:Name="Home" Click="Home_Click" Content="Home" Margin="5 0 0 5" Background="LightGray"  Grid.Column="3"/>
+        </Grid>
+        <Grid>
+            <TextBlock FontSize="10" HorizontalAlignment="Left" Foreground="Yellow" Margin="0 25 0 25">
+            The purpose of this application is to show information about people with cars, people with cars per parking garage and criminality per year for the years 2006-2011.
+            </TextBlock>
+        </Grid>
+        <Grid>
+            <TextBlock FontSize="10" HorizontalAlignment="Left" Foreground="Yellow" Margin="0,25,0,24.6" Width="485">
+            The data is shown in 3 different ways.<LineBreak/> - A bar graph containing a query that combines data from Cars.possession , people.total and parking.district.<LineBreak/> - a line graph containing the criminality per year for multiple years.<LineBreak/> - A graph showing amount of cars per person without the parking garages.
+            </TextBlock>
+        </Grid>
+        <Grid>
+            <TextBlock FontSize="10" HorizontalAlignment="Left" Foreground="Yellow" Margin="0 25 0 25">
+                The questions i tried to answer with these data sources were:<LineBreak/> - how many cars are owned in the city per person.<LineBreak/> - How many people in the city that own a car have access to a parking garage.<LineBreak/> - What was the criminality in the different districts of the last years.
+            </TextBlock>
+        </Grid>
+
+
+    </StackPanel>
+
+
+</Window>

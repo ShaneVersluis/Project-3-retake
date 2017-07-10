@@ -1,0 +1,39 @@
+﻿<Window x:Class="WpfApp1.Criminality"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="Criminality per year" Height="600" Width="800" Background="Black">
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
+    <StackPanel>
+        <TextBlock FontSize="30" HorizontalAlignment="Center" Foreground="Yellow" Margin="0 25 0 25">
+            City Crime
+        </TextBlock>
+        <Grid/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Cursor="Hand" x:Name="PwCperdistrict" Click="PwCperdistrict_Click" Content="People with cars per district" Margin="5 0 0 5" Background="LightGray" Grid.Column="0"/>
+            <Button Cursor="Hand" x:Name="Parkinglot" Click="Parkinglot_click" Content="parkinglot" Margin="5 0 0 5" Background="LightGray" Grid.Column="1"/>
+            <Button Cursor="Hand" x:Name="InfoButton" Click="InfoButton_Click" Content="Application info" Margin="5 0 0 5" Background="LightGray"  Grid.Column="2"/>
+            <Button Cursor="Hand" x:Name="Home" Click="Home_Click" Content="Home" Margin="5 0 0 5" Background="LightGray"  Grid.Column="3"/>
+        </Grid>
+        <Grid Width="700" Height="400">
+            <oxy:PlotView Model="{Binding CriminalityModel}"/>
+
+        </Grid>
+
+
+    </StackPanel>
+
+
+</Window>

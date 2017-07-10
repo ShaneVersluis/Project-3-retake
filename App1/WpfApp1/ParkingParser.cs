@@ -1,8 +1,17 @@
 ﻿using System;
+using MySql.Data;
+using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
+using OxyPlot;
+using OxyPlot.Series;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+
 
 namespace WpfApp1
 {
@@ -11,122 +20,51 @@ namespace WpfApp1
         // create a new datatable for easy transfer to db
         DataTable dt = new DataTable();
         DataRow row;
-
+        
        
 
         public void ReadData()
         {
             // reads the csv file and splits it up at a comma to create a string[]
-            string filepath = @"..\\..\\lights.csv";
+            string filepath = @"C:\Users\Shane versluis\Desktop\Project-3-retake\App1\WpfApp1\parking.csv";
             StreamReader sr = new StreamReader(filepath);
             string line = sr.ReadLine();
             line = line.Replace("\"", "");
             string[] value = line.Split(',');
-
+           
             // creates datacolumns for the required data
             foreach (string datacolumn in value)
             {
-                if (datacolumn == "longitude" || datacolumn == "latitude" || datacolumn == "WIJKNAAM" || datacolumn == "ID_43")
+                Console.WriteLine(value);
+                if (datacolumn == "LATITUDE" || datacolumn == "LONGITUDE" || datacolumn == "NAME" || datacolumn == "TYPE" || datacolumn == "DISTRICT")
                 {
                     dt.Columns.Add(new DataColumn(datacolumn));
+                    
                 }
             }
 
             //reads over the entire csv file and adds the data if it's in correct format
             while (!sr.EndOfStream)
             {
+
                 // read the next line and split it up at a comma
                 string lines = sr.ReadLine();
                 value = lines.Split(',');
 
-                if (value.Length > 5)
+                if (value.Length > 6)
                 {
-                    string[] values = { value[0], value[1], value[5], value[48] };
+                    string[] values = { value[1], value[2], value[3], value[5], value[6]};
 
-                    // regular expression to check if input is in ddmmyyyy format
-                    Regex correctFormat = new Regex(@"^\d{1,2}\/\d{1,2}\/\d{4}$");
+                    row = dt.NewRow();
+                    row.ItemArray = values;
+                    dt.Rows.Add(row);
 
-                    // checks if value[48] matches with the regex, ortherwise it insert an empty string
-                    Match correctFormatMatch = correctFormat.Match(values[3]);
-
-                    // check with regex and remove invalid dates
-                    if (correctFormatMatch.Success && values[3] != "" && values[3] != "0000")
-                    {
-                        string dateOnly = values[3];
-                        string yearOnly;
-
-                        if (dateOnly.Length == 9)
-                        {
-                            yearOnly = dateOnly.Remove(0, 5);
-                        }
-                        else
-                        {
-                            yearOnly = dateOnly.Remove(0, 4);
-                        }
-                        values[3] = yearOnly;
-
-                        // rename columns so they match the other data
-                        if (values[2] == "CHARLOIS")
-                        {
-                            values[2] = "Charlois";
-                        }
-                        else if (values[2] == "DELFSHAVEN")
-                        {
-                            values[2] = "Delfshaven";
-                        }
-                        else if (values[2] == "FEIJENOORD")
-                        {
-                            values[2] = "Feijenoord";
-                        }
-                        else if (values[2] == "HILLEGERSBERG/SCHIEBROEK")
-                        {
-                            values[2] = "Hillegersberg_Schiebroek";
-                        }
-                        else if (values[2] == "HOEK VAN HOLLAND")
-                        {
-                            values[2] = "Hoek_van_Holland";
-                        }
-                        else if (values[2] == "HOOGVLIET" || values[2] == "PERNIS")
-                        {
-                            values[2] = "Hoogvliet_Pernis";
-                        }
-                        else if (values[2] == "IJSSELMONDE")
-                        {
-                            values[2] = "IJsselmonde";
-                        }
-                        else if (values[2] == "KRALINGEN-CROOSWIJK")
-                        {
-                            values[2] = "Kralingen_Crooswijk";
-                        }
-                        else if (values[2] == "NOORD")
-                        {
-                            values[2] = "Noord";
-                        }
-                        else if (values[2] == "OVERSCHIE")
-                        {
-                            values[2] = "Overschie";
-                        }
-                        else if (values[2] == "PRINS ALEXANDER")
-                        {
-                            values[2] = "Prins_Alexander";
-                        }
-                        else if (values[2] == "ROTTERDAM CENTRUM")
-                        {
-                            values[2] = "Stadscentrum";
-                        }
-
-                        // remove columns that aren't used in the other data
-                        if (values[2] != "BEDRIJVENPARK RDAM NW" && values[2] != "RIVIUM" && values[2] != "ROZENBURG" && values[2] != "SPAANSE POLDER" && values[2] != "NIEUW MATHENESSE")
-                        {
-                            row = dt.NewRow();
-                            row.ItemArray = values;
-                            dt.Rows.Add(row);
-                        }
-                    }
                 }
             }
         }
 
+
+        // This builds a string from the data we gathered from parking.csv and put it into a new csv file called Test.csv
         public void datatableToCSV()
         {
             StringBuilder sb = new StringBuilder();
@@ -148,18 +86,19 @@ namespace WpfApp1
             // write the string to a .csv file
             File.WriteAllText("test.csv", sb.ToString());
         }
-
+        //This is where i write the data to the database
         public void WriteToDB()
         {
             datatableToCSV();
-
-            MySqlConnection connection = new MySqlConnection("SERVER = localhost;" +
-                                                             "Database = datasetsproject3;" +
+            //making a connection with the database
+            MySqlConnection connection = new MySqlConnection("SERVER = 127.0.0.1;" +
+                                                             "Database = dbproject3retake;" +
                                                              "User ID = root;" +
                                                              "Password = root;");
-            // use MySqlBulkLoader for speedy transfer to the db
+
+            //bulk load the data to the database
             MySqlBulkLoader bl = new MySqlBulkLoader(connection);
-            bl.TableName = "lamps";
+            bl.TableName = "parking";
             bl.FieldTerminator = ",";
             bl.LineTerminator = "\r\n";
             bl.FileName = "test.csv";

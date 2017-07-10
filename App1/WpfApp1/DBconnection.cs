@@ -1,8 +1,15 @@
 ﻿using System;
+using MySql.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
+using MySql.Data.Types;
+using System.Data;
+using OxyPlot;
+using OxyPlot.Series;
+
 
 namespace WpfApp1
 {
@@ -10,7 +17,9 @@ namespace WpfApp1
     {
         //making a new MySqlConnection varible called conn to use to interact with the database
         public MySqlConnection conn = new MySqlConnection();
-        
+
+        List<string> district = new List<string>();
+        List<string> neighborhood = new List<string>();
 
         public void CreateDB()
         {
@@ -19,7 +28,7 @@ namespace WpfApp1
             string sqlQuery = @"DROP TABLE IF EXISTS parking;
                                 DROP TABLE IF EXISTS public_transport;
                                 DROP TABLE IF EXISTS car_possession;
-                                DROP TABLE IF EXISTS criminality
+                                DROP TABLE IF EXISTS criminality;
                                 DROP TABLE IF EXISTS people;
                                 
 
@@ -28,14 +37,9 @@ namespace WpfApp1
                                     latitude float(32), 
                                     longitude float(32), 
                                     name varchar(32),
+                                    type varchar(32),
+                                    district varchar(32)
                                 );
-                                CREATE TABLE public_transport
-                                (
-                                    name varchar(32),
-                                    desc varchar(32),
-                                    longitude float(32),
-                                    latitude float(32),
-                                )
                                  CREATE TABLE car_possession
                                 (
                                     neighborhood varchar(69),
@@ -49,6 +53,8 @@ namespace WpfApp1
                                     year_2008 int,
                                     year_2009 int,
                                     year_2011 int
+                                );
+
                                 CREATE TABLE people
                                 (
                                     neighborhood varchar(69),
@@ -104,7 +110,7 @@ namespace WpfApp1
                                         ('Hoogvliet_Pernis', 4785),
                                         ('Prins_Alexander', 94600),
                                         ('Rozenburg', 12420),
-                                        ('Stadscentrum', 32925)";
+                                        ('Stadscentrum', 32925);";
             this.dbCommand(sqlQuery);
         }
 
@@ -112,8 +118,8 @@ namespace WpfApp1
         public void OpenConnection()
         {
             //this is the connection data to make a connection to the Database
-            conn.ConnectionString = "SERVER = ;" +
-                                    "Database = ;" +
+            conn.ConnectionString = "SERVER = 127.0.0.1;" +
+                                    "Database = dbproject3retake;" +
                                     "User ID = root;" +
                                     "Password = root;";
             //opens the connection
@@ -133,16 +139,77 @@ namespace WpfApp1
             command.ExecuteNonQuery();
             this.CloseConnection();
         }
+
+        public List<string> getdistrictFromDB()
+        {
+            string sqlQuery = "SELECT DISTINCT(district) FROM parking;";
+
+            this.OpenConnection();
+            MySqlCommand command = new MySqlCommand(sqlQuery, conn);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                district.Add(reader.GetString(0));
+            }
+
+            district.Sort();
+
+            this.CloseConnection();
+
+            return district;
+        }
+
+        public List<string> getneighboorhoodFromDB()
+        {
+            string sqlQuery = "SELECT DISTINCT(neighborhood) FROM car_possession;";
+
+            this.OpenConnection();
+            MySqlCommand command = new MySqlCommand(sqlQuery, conn);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                neighborhood.Add(reader.GetString(0));
+            }
+
+            neighborhood.Sort();
+
+            this.CloseConnection();
+
+            return neighborhood;
+        }
+
+        public List<BarItem> getPeopleData()
+        {
+            List<BarItem> peopleData = new List<BarItem>();
+            string sqlQuery = @"SELECT car_possession.neighborhood, ROUND((people.total + car_possession.total)/ COUNT(car_possession.neighborhood)) AS 'people_w/_cars'
+                                FROM car_possession, people
+                                WHERE car_possession.neighborhood = people.neighborhood
+                                GROUP BY car_possession.neighborhood;";
+            this.OpenConnection();
+            MySqlCommand command = new MySqlCommand(sqlQuery, conn);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                peopleData.Add(new BarItem { Value = reader.GetDouble(1) });
+            }
+
+            this.CloseConnection();
+
+            return peopleData;
+        }
         // gets a list of people with a car per neighborhood.
         // this gets stored in a list called carData
         public List<BarItem> getCarData()
         {
             //creates a new list called carData
             List<BarItem> carData = new List<BarItem>();
-            string sqlQuery = @"SELECT car_possession.neighborhood, ROUND((people.total * car_possession.total) AS 'people_with_cars'
-                                FROM car_possession, people
+            string sqlQuery = @"SELECT car_possession.neighborhood, ROUND((people.total / car_possession.total)* COUNT(car_possession.neighborhood)) AS 'people_w/_cars_per_district'
+                                FROM car_possession, people,parking
                                 WHERE car_possession.neighborhood = people.neighborhood
-                                GROUP BY lamps.neighborhood;";
+                                GROUP BY parking.district;";
             //opens connection to DB
             this.OpenConnection();
             MySqlCommand command = new MySqlCommand(sqlQuery, conn);

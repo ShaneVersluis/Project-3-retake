@@ -10,48 +10,30 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MySql.Data;
-using MySql.Data.MySqlClient;
-using System.Data;
-using OxyPlot;
-using OxyPlot.Series;
-
 
 namespace WpfApp1
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for PwC.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class PwC : Window
     {
-        public MainWindow()
+        public PwC()
         {
-            //do a test on the database
-            DBconnection test = new DBconnection();
-            test.CreateDB();
-            
-            //Do a test on the parser
-            IParse db = new ParkingParser();
-            db.ReadData();
-            db.WriteToDB();
-            test.InsertIntoDB();
-
             InitializeComponent();
         }
 
+        private void Home_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow Home = new MainWindow();
+            Home.Show();
+            this.Close();
+        }
         private void InfoButton_Click(object sender, RoutedEventArgs e)
         {
             Info CInfo = new Info();
             CInfo.Show();
-            this.Close();
-        }
-
-        private void PwCperdistrict_Click(object sender, RoutedEventArgs e)
-        {
-            PwC CPwc = new PwC();
-            CPwc.Show();
             this.Close();
         }
 
