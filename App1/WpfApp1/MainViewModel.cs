@@ -19,11 +19,16 @@ namespace WpfApp1
 
             // setup database connection
             DBconnection dbConn = new DBconnection();
+
+            //get data from the database defined in DBconnection
             var district = dbConn.getdistrictFromDB();
             var neighborhood = dbConn.getneighboorhoodFromDB();
 
+            //make a new plotmodel to be used to show a linegraph
 
             this.CriminalityModel = new PlotModel { Title = "Criminality per year" };
+
+            //all the vars: "" are lines on the graph
             var CrimiCharlois = new LineSeries
             {
                 Title = "Charlois",
@@ -183,11 +188,14 @@ namespace WpfApp1
             CrimiStadscentrum.Points.Add(new DataPoint(2011, 721));
             CriminalityModel.Series.Add(CrimiStadscentrum);
 
+
+            //make the axes and the minimum and maximum for the linegraph
             CriminalityModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Minimum = 2005, Maximum = 2012 });
             CriminalityModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Minimum = 0, Maximum = 1200 });
 
 
             // Create new model
+            // With data gotten from the database
             this.CarModel = new PlotModel { Title = "Number of people with a car per district that has a parking garage" };
             var carBarSeries = new BarSeries
             {
@@ -196,7 +204,7 @@ namespace WpfApp1
                 LabelFormatString = "{0}"
             };
             CarModel.Series.Add(carBarSeries);
-
+            //make axes through the CarModel data
             CarModel.Axes.Add(new CategoryAxis
             {
                 Position = AxisPosition.Left,
@@ -206,6 +214,7 @@ namespace WpfApp1
             
             
             // Create new model
+            // With data gotten from the database
             this.PeopleModel = new PlotModel { Title = "Number of persons with a car per district" };
             var PeopleBarSeries = new BarSeries
             {
@@ -214,7 +223,8 @@ namespace WpfApp1
                 LabelFormatString = "{0}"
             };
             PeopleModel.Series.Add(PeopleBarSeries);
-
+            
+            //make axes through the PeopleModel
             PeopleModel.Axes.Add(new CategoryAxis
             {
                 Position = AxisPosition.Left,
@@ -222,6 +232,7 @@ namespace WpfApp1
                 ItemsSource = neighborhood
             }); ;
         }
+        //create the plot models to be used in the WPF files
         public PlotModel CriminalityModel { get; private set; }
         public PlotModel CarModel { get; private set; }
         public PlotModel PeopleModel { get; private set; }

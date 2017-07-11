@@ -53,6 +53,7 @@ namespace WpfApp1
 
                 if (value.Length > 6)
                 {
+                    //gets these set colomns from csv file
                     string[] values = { value[1], value[2], value[3], value[5], value[6]};
 
                     row = dt.NewRow();

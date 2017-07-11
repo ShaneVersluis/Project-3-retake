@@ -139,7 +139,7 @@ namespace WpfApp1
             command.ExecuteNonQuery();
             this.CloseConnection();
         }
-
+        //make a new list with a query from the data base
         public List<string> getdistrictFromDB()
         {
             string sqlQuery = "SELECT DISTINCT(district) FROM parking;";
